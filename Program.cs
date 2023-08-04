@@ -1,4 +1,6 @@
-﻿using System;
+﻿// https://learn.microsoft.com/en-us/aspnet/core/migration/1x-to-2x/identity-2x?view=aspnetcore-7.0
+//
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
