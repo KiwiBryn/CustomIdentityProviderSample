@@ -13,6 +13,7 @@ using CustomIdentityProviderSample.Models;
 using CustomIdentityProviderSample.Models.AccountViewModels;
 using CustomIdentityProviderSample.Services;
 using CustomIdentityProviderSample.CustomProvider;
+using Microsoft.AspNetCore.Authentication; // BHL
 
 namespace CustomIdentityProviderSample.Controllers
 {
@@ -29,14 +30,14 @@ namespace CustomIdentityProviderSample.Controllers
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IOptions<IdentityCookieOptions> identityCookieOptions,
+            // IOptions<IdentityCookieOptions> identityCookieOptions, BHL
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme;
+            // _externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme; BHL
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
@@ -49,7 +50,8 @@ namespace CustomIdentityProviderSample.Controllers
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.Authentication.SignOutAsync(_externalCookieScheme);
+            //await HttpContext.Authentication.SignOutAsync(_externalCookieScheme); BHHL
+            await HttpContext.SignOutAsync(_externalCookieScheme);
 
             ViewData["ReturnUrl"] = returnUrl;
             return View();
