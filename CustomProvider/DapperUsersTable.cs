@@ -4,6 +4,7 @@ using System.Threading;
 using System.Data.SqlClient;
 using System;
 using Dapper;
+using System.Collections.Generic;
 
 namespace CustomIdentityProviderSample.CustomProvider
 {
@@ -18,8 +19,9 @@ namespace CustomIdentityProviderSample.CustomProvider
 #region createuser
         public async Task<IdentityResult> CreateAsync(ApplicationUser user)
         {
-            string sql = "INSERT INTO dbo.CustomUser " +
-                "VALUES (@id, @Email, @EmailConfirmed, @PasswordHash, @UserName)";
+            string sql = "INSERT INTO dbo.AspNetUsers " + // BHL
+                     "([Id],[Email],[EmailConfirmed],[PasswordHash],[UserName])" +
+                     "VALUES (@id, @Email, @EmailConfirmed, @PasswordHash, @UserName)";
 
             int rows = await _connection.ExecuteAsync(sql, new { user.Id, user.Email, user.EmailConfirmed, user.PasswordHash, user.UserName });
 
@@ -33,7 +35,7 @@ namespace CustomIdentityProviderSample.CustomProvider
 
         public async Task<IdentityResult> DeleteAsync(ApplicationUser user)
         {
-            string sql = "DELETE FROM dbo.CustomUser WHERE Id = @Id";
+            string sql = "DELETE FROM dbo.AspNetUsers WHERE Id = @Id";
             int rows = await _connection.ExecuteAsync(sql, new { user.Id });
 
             if(rows > 0)
@@ -47,7 +49,7 @@ namespace CustomIdentityProviderSample.CustomProvider
         public async Task<ApplicationUser> FindByIdAsync(Guid userId)
         {
             string sql = "SELECT * " +
-                        "FROM dbo.CustomUser " +
+                        "FROM dbo.AspNetUsers " +
                         "WHERE Id = @Id;";
 
             return await _connection.QuerySingleOrDefaultAsync<ApplicationUser>(sql, new
@@ -60,13 +62,39 @@ namespace CustomIdentityProviderSample.CustomProvider
         public async Task<ApplicationUser> FindByNameAsync(string userName)
         {
             string sql = "SELECT * " +
-                        "FROM dbo.CustomUser " +
+                        "FROM dbo.AspNetUsers " +
                         "WHERE UserName = @UserName;";
 
             return await _connection.QuerySingleOrDefaultAsync<ApplicationUser>(sql, new
             {
                 UserName = userName
             });
+        }
+
+        public async Task<IList<UserLoginInfo>> GetLoginsAsync(string id)
+        {
+            string sql = "SELECT LoginProvider,ProviderKey, ProviderDisplayName as DisplayName " +
+                        "FROM dbo.AspNetUserLogins " + // BHL
+                        "WHERE UserId = @Id;";
+
+            return (await _connection.QueryAsync<UserLoginInfo>(sql, new { id })).AsList<UserLoginInfo>();
+        }
+
+        public async Task<IdentityResult> UpdateAsync(ApplicationUser user)
+        {
+            string sql = "UPDATE dbo.AspNetUsers " + // BHL
+                     "SET [Id] = @Id, [Email]= @Email, [EmailConfirmed] = @EmailConfirmed, [PasswordHash] = @PasswordHash, [UserName] = @UserName " +
+                     "WHERE Id = @Id;";
+
+
+            int rows = await _connection.ExecuteAsync(sql, new { user.Id, user.Email, user.EmailConfirmed, user.PasswordHash, user.UserName });
+
+            if (rows == 1)
+            {
+                return IdentityResult.Success;
+            }
+
+            return IdentityResult.Failed(new IdentityError { Description = $"Could not update user {user.Email}." });
         }
     }
 }
