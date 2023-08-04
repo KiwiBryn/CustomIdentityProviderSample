@@ -9,7 +9,9 @@ namespace CustomIdentityProviderSample.CustomProvider
     /// This store is only partially implemented. It supports user creation and find methods.
     /// </summary>
     public class CustomUserStore : IUserStore<ApplicationUser>, 
-        IUserPasswordStore<ApplicationUser>
+        IUserPasswordStore<ApplicationUser>,
+        IUserPhoneNumberStore<ApplicationUser>
+
     {
         private readonly DapperUsersTable _usersTable;
 
@@ -80,6 +82,19 @@ namespace CustomIdentityProviderSample.CustomProvider
             return Task.FromResult(user.PasswordHash);
         }
 
+        public Task<string> GetPhoneNumberAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null) throw new ArgumentNullException(nameof(user));
+
+            return Task.FromResult(user.TelephoneNumber);
+        }
+
+        public Task<bool> GetPhoneNumberConfirmedAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<string> GetUserIdAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -128,6 +143,16 @@ namespace CustomIdentityProviderSample.CustomProvider
             user.PasswordHash = passwordHash;
             return Task.FromResult<object>(null);
 
+        }
+
+        public Task SetPhoneNumberAsync(ApplicationUser user, string phoneNumber, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetPhoneNumberConfirmedAsync(ApplicationUser user, bool confirmed, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         public Task SetUserNameAsync(ApplicationUser user, string userName, CancellationToken cancellationToken)
