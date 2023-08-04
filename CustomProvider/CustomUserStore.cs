@@ -27,7 +27,6 @@ namespace CustomIdentityProviderSample.CustomProvider
             throw new NotImplementedException();
         }
 
-        #region createuser
         public async Task<IdentityResult> CreateAsync(ApplicationUser user, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -36,7 +35,6 @@ namespace CustomIdentityProviderSample.CustomProvider
 
             return await _usersTable.CreateAsync(user);
         }
-        #endregion
 
         public async Task<IdentityResult> DeleteAsync(ApplicationUser user, 
             CancellationToken cancellationToken = default(CancellationToken))
@@ -81,9 +79,12 @@ namespace CustomIdentityProviderSample.CustomProvider
             return await _usersTable.FindByNameAsync(userName);
         }
 
-        public Task<IList<UserLoginInfo>> GetLoginsAsync(ApplicationUser user, CancellationToken cancellationToken)
+        public async Task<IList<UserLoginInfo>> GetLoginsAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null) throw new ArgumentNullException(nameof(user));
+
+            return await _usersTable.GetLoginsAsync(user.Id);
         }
 
         public Task<string> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -104,7 +105,7 @@ namespace CustomIdentityProviderSample.CustomProvider
             cancellationToken.ThrowIfCancellationRequested();
             if (user == null) throw new ArgumentNullException(nameof(user));
 
-            return Task.FromResult(user.TelephoneNumber);
+            return Task.FromResult(user.PhoneNumber);
         }
 
         public Task<bool> GetPhoneNumberConfirmedAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -175,6 +176,19 @@ namespace CustomIdentityProviderSample.CustomProvider
 
         }
 
+        public Task SetUserNameAsync(ApplicationUser user, string userName, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null) throw new ArgumentNullException(nameof(user));
+
+            return await _usersTable.UpdateAsync(user);
+        }
+
         public Task SetPhoneNumberAsync(ApplicationUser user, string phoneNumber, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
@@ -186,16 +200,6 @@ namespace CustomIdentityProviderSample.CustomProvider
         }
 
         public Task SetTwoFactorEnabledAsync(ApplicationUser user, bool enabled, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SetUserNameAsync(ApplicationUser user, string userName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
