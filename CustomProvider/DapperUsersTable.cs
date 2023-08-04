@@ -47,7 +47,7 @@ namespace CustomIdentityProviderSample.CustomProvider
         public async Task<ApplicationUser> FindByIdAsync(Guid userId)
         {
             string sql = "SELECT * " +
-                        "FROM dbo.CustomUsers " +
+                        "FROM dbo.CustomUser " +
                         "WHERE Id = @Id;";
 
             return await _connection.QuerySingleOrDefaultAsync<ApplicationUser>(sql, new
