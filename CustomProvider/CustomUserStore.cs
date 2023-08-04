@@ -98,7 +98,15 @@ namespace CustomIdentityProviderSample.CustomProvider
 
         public Task<bool> HasPasswordAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null) throw new ArgumentNullException(nameof(user));
+
+            if (string.IsNullOrEmpty(user.PasswordHash))
+            {
+                return Task.FromResult(false);
+            }
+
+            return Task.FromResult(true);
         }
 
         public Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken)
