@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace CustomIdentityProviderSample.CustomProvider
 {
@@ -11,7 +12,8 @@ namespace CustomIdentityProviderSample.CustomProvider
     public class CustomUserStore : IUserStore<ApplicationUser>, 
         IUserPasswordStore<ApplicationUser>,
         IUserPhoneNumberStore<ApplicationUser>,
-        IUserTwoFactorStore<ApplicationUser>
+        IUserTwoFactorStore<ApplicationUser>,
+        IUserLoginStore<ApplicationUser>
     {
         private readonly DapperUsersTable _usersTable;
 
@@ -19,7 +21,12 @@ namespace CustomIdentityProviderSample.CustomProvider
         {
             _usersTable = usersTable;
         }
-        
+
+        public Task AddLoginAsync(ApplicationUser user, UserLoginInfo login, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         #region createuser
         public async Task<IdentityResult> CreateAsync(ApplicationUser user, 
             CancellationToken cancellationToken = default(CancellationToken))
@@ -60,6 +67,11 @@ namespace CustomIdentityProviderSample.CustomProvider
 
         }
 
+        public Task<ApplicationUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ApplicationUser> FindByNameAsync(string userName, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -67,6 +79,11 @@ namespace CustomIdentityProviderSample.CustomProvider
             if (userName == null) throw new ArgumentNullException(nameof(userName));
 
             return await _usersTable.FindByNameAsync(userName);
+        }
+
+        public Task<IList<UserLoginInfo>> GetLoginsAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<string> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -130,6 +147,11 @@ namespace CustomIdentityProviderSample.CustomProvider
             }
 
             return Task.FromResult(true);
+        }
+
+        public Task RemoveLoginAsync(ApplicationUser user, string loginProvider, string providerKey, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         public Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken)
