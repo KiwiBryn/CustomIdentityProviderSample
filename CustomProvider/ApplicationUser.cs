@@ -10,6 +10,7 @@ namespace CustomIdentityProviderSample.CustomProvider
         public virtual string Email { get; set; }
         public virtual bool EmailConfirmed { get; set; }
         public virtual string TelephoneNumber { get; set; }
+        public virtual bool TwoFactorEnabled { get; set; }
         public virtual String PasswordHash { get; set; }
         public string NormalizedUserName { get; internal set; }
         public string AuthenticationType { get; set; }

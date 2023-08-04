@@ -10,8 +10,8 @@ namespace CustomIdentityProviderSample.CustomProvider
     /// </summary>
     public class CustomUserStore : IUserStore<ApplicationUser>, 
         IUserPasswordStore<ApplicationUser>,
-        IUserPhoneNumberStore<ApplicationUser>
-
+        IUserPhoneNumberStore<ApplicationUser>,
+        IUserTwoFactorStore<ApplicationUser>
     {
         private readonly DapperUsersTable _usersTable;
 
@@ -95,6 +95,14 @@ namespace CustomIdentityProviderSample.CustomProvider
             throw new NotImplementedException();
         }
 
+        public Task<bool> GetTwoFactorEnabledAsync(ApplicationUser user, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null) throw new ArgumentNullException(nameof(user));
+
+            return Task.FromResult(user.TwoFactorEnabled);
+        }
+
         public Task<string> GetUserIdAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -151,6 +159,11 @@ namespace CustomIdentityProviderSample.CustomProvider
         }
 
         public Task SetPhoneNumberConfirmedAsync(ApplicationUser user, bool confirmed, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetTwoFactorEnabledAsync(ApplicationUser user, bool enabled, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
